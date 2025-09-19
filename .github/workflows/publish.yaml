@@ -39,10 +39,56 @@ jobs:
         with:
           verbose: true
 
-      # Prepare .pypirc for GitHub Packages (only need [github] section)
-      - name: Prepare .pypirc for GitHub Packages
+      # Prepare package for GitHub Packages
+      - name: Prepare package for GitHub Packages
         run: |
-          echo "GITHUB_REPOSITORY: $GITHUB_REPOSITORY"
+          # Create a temporary directory for GitHub Packages version
+          mkdir -p github_pkg
+          cp -r src github_pkg/
+          cp README.md LICENSE github_pkg/
+          
+          # Create a customized pyproject.toml for GitHub Packages
+          cat > github_pkg/pyproject.toml <<EOF
+          [build-system]
+          requires = ["setuptools>=61.0", "wheel"]
+          build-backend = "setuptools.build_meta"
+          
+          [project]
+          name = "jj-sm.airac-tools"
+          version = "$(grep -oP 'version = "\K[^"]+' pyproject.toml)"
+          description = "Utilities for working with ICAO AIRAC cycles, including cycle calculations, validation, and conversions."
+          authors = [
+              { name="Juan José Sánchez", email="pip@jjsm.science" }
+          ]
+          readme = "README.md"
+          requires-python = ">=3.8"
+          license = { file = "LICENSE" }
+          classifiers = [
+              "Programming Language :: Python :: 3",
+              "License :: OSI Approved :: MIT License",
+              "Operating System :: OS Independent",
+          ]
+          
+          [project.urls]
+          Homepage = "https://github.com/jj-sm/airac-cc"
+          Repository = "https://github.com/jj-sm/airac-cc"
+          
+          [tool.setuptools]
+          package-dir = {"" = "src"}
+          
+          [tool.setuptools.packages.find]
+          where = ["src"]
+          EOF
+          
+          # Build the GitHub Packages version
+          cd github_pkg
+          python -m build
+          cd ..
+
+      # Publish to GitHub Packages
+      - name: Publish to GitHub Packages
+        run: |
+          # Create .pypirc for GitHub Packages
           cat > ~/.pypirc <<EOF
           [distutils]
           index-servers =
@@ -53,8 +99,6 @@ jobs:
           username = ${{ github.actor }}
           password = ${{ secrets.GITHUB_TOKEN }}
           EOF
-
-      # Publish to GitHub Packages
-      - name: Publish to GitHub Packages
-        run: |
-          twine upload --repository github --verbose dist/*
+          
+          # Upload to GitHub Packages
+          twine upload --repository github --verbose github_pkg/dist/*
