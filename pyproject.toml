@@ -1,0 +1,17 @@
+[project]
+name = "airac-tools"
+version = "0.1.0"
+description = "AIRAC cycle calculation and validation utilities"
+authors = [
+    { name="Juan José Sánchez", email="pip@jjsm.science" }
+]
+readme = "README.md"
+requires-python = ">=3.8"
+dependencies = []
+
+[build-system]
+requires = ["setuptools>=61.0"]
+build-backend = "setuptools.build_meta"
+
+[tool.setuptools.packages.find]
+where = ["airac-cc"]
