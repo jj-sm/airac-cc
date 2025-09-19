@@ -3,8 +3,8 @@ requires = ["setuptools>=61.0", "wheel"]
 build-backend = "setuptools.build_meta"
 
 [project]
-name = "airac-tools"
-version = "1.0.3"
+name = "jj-sm/airac-tools"
+version = "1.0.4"
 description = "Utilities for working with ICAO AIRAC cycles, including cycle calculations, validation, and conversions."
 authors = [
     { name="Juan José Sánchez", email="pip@jjsm.science" }
