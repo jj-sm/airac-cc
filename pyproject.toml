@@ -35,3 +35,7 @@ package-dir = {"" = "src"}
 
 [tool.setuptools.packages.find]
 where = ["src"]
+
+[tool.twine.repositories]
+pypi = "https://upload.pypi.org/legacy/"
+github = "https://upload.pypi.org/legacy/"

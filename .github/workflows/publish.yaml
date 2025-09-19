@@ -23,18 +23,28 @@ jobs:
     runs-on: ubuntu-latest
     if: startsWith(github.ref, 'refs/tags/v')
     permissions:
-      id-token: write  # Required for OIDC!
+      id-token: write   # For PyPI trusted publishing
       contents: read
+      packages: write   # For GitHub Packages
     steps:
       - uses: actions/checkout@v4
       - uses: actions/setup-python@v5
         with:
           python-version: '3.10'
-      - run: pip install build
+      - run: pip install build twine
+
       - run: python -m build
-      - name: Publish to PyPI (trusted publisher)
+
+      # Publish to PyPI (Trusted Publisher)
+      - name: Publish to PyPI
         uses: pypa/gh-action-pypi-publish@release/v1
         with:
-          # No username or password needed!
-          # The action will use OIDC and your trusted publisher config in PyPI
           verbose: true
+
+      # Publish to GitHub Packages
+      - name: Publish to GitHub Packages
+        env:
+          TWINE_USERNAME: __token__
+          TWINE_PASSWORD: ${{ secrets.GITHUB_TOKEN }}
+        run: |
+          twine upload --repository github dist/*
