@@ -3,8 +3,8 @@ requires = ["setuptools>=61.0", "wheel"]
 build-backend = "setuptools.build_meta"
 
 [project]
-name = "airac-tools"
-version = "1.0.7"
+name = "jj-sm.airac-tools"
+version = "1.0.8"
 description = "Utilities for working with ICAO AIRAC cycles, including cycle calculations, validation, and conversions."
 authors = [
     { name="Juan José Sánchez", email="pip@jjsm.science" }
@@ -38,4 +38,3 @@ where = ["src"]
 
 [tool.twine.repositories]
 pypi = "https://upload.pypi.org/legacy/"
-github = "https://pypi.pkg.github.com/jj-sm"
