@@ -1,5 +1,11 @@
 # airac-tools
 
+![PyPI - Version](https://img.shields.io/pypi/v/airac-tools?style=flat-square)
+![PyPI - License](https://img.shields.io/pypi/l/airac-tools?style=flat-square)
+
+
+
+
 **airac-tools** is a Python package for working with ICAO AIRAC (Aeronautical Information Regulation And Control) cycles.  
 It provides a variety of utilities to determine cycle dates, validate cycle strings, perform conversions, iterate over cycles, and more.
 
