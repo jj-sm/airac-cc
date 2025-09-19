@@ -1,6 +1,6 @@
 import pytest
 from datetime import datetime, timedelta, timezone
-from src.airac_tools import cycle as core
+from airac_tools import cycle as core
 
 
 def test_valid_cycle():
