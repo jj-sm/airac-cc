@@ -3,8 +3,8 @@ requires = ["setuptools>=61.0", "wheel"]
 build-backend = "setuptools.build_meta"
 
 [project]
-name = "jj-sm.airac-tools"
-version = "1.0.8"
+name = "airac-tools"
+version = "1.0.9"
 description = "Utilities for working with ICAO AIRAC cycles, including cycle calculations, validation, and conversions."
 authors = [
     { name="Juan José Sánchez", email="pip@jjsm.science" }
@@ -26,9 +26,9 @@ classifiers = [
 ]
 
 [project.urls]
-Homepage = "https://github.com/jj-sm/airac-cc"
-Repository = "https://github.com/jj-sm/airac-cc"
-Issues = "https://github.com/jj-sm/airac-cc/issues"
+Homepage = "https://github.com/jj-sm/airac-tools"
+Repository = "https://github.com/jj-sm/airac-tools"
+Issues = "https://github.com/jj-sm/airac-tools/issues"
 
 [tool.setuptools]
 package-dir = {"" = "src"}

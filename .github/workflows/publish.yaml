@@ -70,8 +70,8 @@ jobs:
           ]
           
           [project.urls]
-          Homepage = "https://github.com/jj-sm/airac-cc"
-          Repository = "https://github.com/jj-sm/airac-cc"
+          Homepage = "https://github.com/jj-sm/airac-tools"
+          Repository = "https://github.com/jj-sm/airac-tools"
           
           [tool.setuptools]
           package-dir = {"" = "src"}

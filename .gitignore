@@ -14,6 +14,8 @@ Icon
 
 .idea/
 
+dist/
+
 # Thumbnails
 ._*
 
