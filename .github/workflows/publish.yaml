@@ -22,83 +22,24 @@ jobs:
     runs-on: ubuntu-latest
     if: startsWith(github.ref, 'refs/tags/v')
     permissions:
-      id-token: write   # For PyPI trusted publishing
+      id-token: write  # Required for OIDC!
       contents: read
-      packages: write   # For GitHub Packages
     steps:
       - uses: actions/checkout@v4
       - uses: actions/setup-python@v5
         with:
           python-version: '3.10'
       - run: pip install build twine
+      - run: pip install build
       - run: python -m build
-
-      # Publish to PyPI (Trusted Publisher)
       - name: Publish to PyPI
+        env:
+          TWINE_USERNAME: ${{ secrets.PYPI_USERNAME }}
+          TWINE_PASSWORD: ${{ secrets.PYPI_PASSWORD }}
+        run: twine upload dist/*
+      - name: Publish to PyPI (trusted publisher)
         uses: pypa/gh-action-pypi-publish@release/v1
         with:
+          # No username or password needed!
+          # The action will use OIDC and your trusted publisher config in PyPI
           verbose: true
-
-      # Prepare package for GitHub Packages
-      - name: Prepare package for GitHub Packages
-        run: |
-          # Create a temporary directory for GitHub Packages version
-          mkdir -p github_pkg
-          cp -r src github_pkg/
-          cp README.md LICENSE github_pkg/
-          
-          # Create a customized pyproject.toml for GitHub Packages
-          cat > github_pkg/pyproject.toml <<EOF
-          [build-system]
-          requires = ["setuptools>=61.0", "wheel"]
-          build-backend = "setuptools.build_meta"
-          
-          [project]
-          name = "jj-sm.airac-tools"
-          version = "$(grep -oP 'version = "\K[^"]+' pyproject.toml)"
-          description = "Utilities for working with ICAO AIRAC cycles, including cycle calculations, validation, and conversions."
-          authors = [
-              { name="Juan José Sánchez", email="pip@jjsm.science" }
-          ]
-          readme = "README.md"
-          requires-python = ">=3.8"
-          license = { file = "LICENSE" }
-          classifiers = [
-              "Programming Language :: Python :: 3",
-              "License :: OSI Approved :: MIT License",
-              "Operating System :: OS Independent",
-          ]
-          
-          [project.urls]
-          Homepage = "https://github.com/jj-sm/airac-tools"
-          Repository = "https://github.com/jj-sm/airac-tools"
-          
-          [tool.setuptools]
-          package-dir = {"" = "src"}
-          
-          [tool.setuptools.packages.find]
-          where = ["src"]
-          EOF
-          
-          # Build the GitHub Packages version
-          cd github_pkg
-          python -m build
-          cd ..
-
-      # Publish to GitHub Packages
-      - name: Publish to GitHub Packages
-        run: |
-          # Create .pypirc for GitHub Packages
-          cat > ~/.pypirc <<EOF
-          [distutils]
-          index-servers =
-              github
-  
-          [github]
-          repository = https://pypi.pkg.github.com/${{ github.repository_owner }}
-          username = ${{ github.actor }}
-          password = ${{ secrets.GITHUB_TOKEN }}
-          EOF
-          
-          # Upload to GitHub Packages
-          twine upload --repository github --verbose github_pkg/dist/*
