@@ -2,7 +2,6 @@ name: Test & Publish
 
 on:
   push:
-#    branches: [ main ]
     tags: ["v*"]
   pull_request:
 
@@ -43,13 +42,14 @@ jobs:
       # Prepare .pypirc for GitHub Packages (only need [github] section)
       - name: Prepare .pypirc for GitHub Packages
         run: |
+          echo "GITHUB_REPOSITORY: $GITHUB_REPOSITORY"
           cat > ~/.pypirc <<EOF
           [distutils]
           index-servers =
               github
   
           [github]
-          repository = https://pypi.pkg.github.com/jj-sm
+          repository = https://pypi.pkg.github.com/${{ github.repository_owner }}
           username = ${{ github.actor }}
           password = ${{ secrets.GITHUB_TOKEN }}
           EOF
@@ -57,4 +57,4 @@ jobs:
       # Publish to GitHub Packages
       - name: Publish to GitHub Packages
         run: |
-          twine upload --repository github dist/*
+          twine upload --repository github --verbose dist/*
