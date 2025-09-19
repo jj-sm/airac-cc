@@ -32,7 +32,6 @@ jobs:
         with:
           python-version: '3.10'
       - run: pip install build twine
-
       - run: python -m build
 
       # Publish to PyPI (Trusted Publisher)
@@ -41,10 +40,21 @@ jobs:
         with:
           verbose: true
 
+      # Prepare .pypirc for GitHub Packages (only need [github] section)
+      - name: Prepare .pypirc for GitHub Packages
+        run: |
+          cat > ~/.pypirc <<EOF
+          [distutils]
+          index-servers =
+              github
+  
+          [github]
+          repository = https://pypi.pkg.github.com/jj-sm
+          username = ${{ github.actor }}
+          password = ${{ secrets.GITHUB_TOKEN }}
+          EOF
+
       # Publish to GitHub Packages
       - name: Publish to GitHub Packages
-        env:
-          TWINE_USERNAME: __token__
-          TWINE_PASSWORD: ${{ secrets.GITHUB_TOKEN }}
         run: |
           twine upload --repository github dist/*

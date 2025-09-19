@@ -38,4 +38,4 @@ where = ["src"]
 
 [tool.twine.repositories]
 pypi = "https://upload.pypi.org/legacy/"
-github = "https://upload.pypi.org/legacy/"
+github = "https://pypi.pkg.github.com/jj-sm"
