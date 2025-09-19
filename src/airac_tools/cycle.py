@@ -4,23 +4,39 @@ import re
 _AIRAC_START_2000 = datetime(2000, 1, 27, tzinfo=timezone.utc)
 
 
+def get_first_airac_of_year(year: int) -> datetime:
+    # The first AIRAC cycle starts on the last Thursday between Jan 17 and Jan 23 (inclusive)
+    last_thursday = None
+    for day in range(17, 24):
+        d = datetime(year, 1, day, tzinfo=timezone.utc)
+        if d.weekday() == 3:  # 3 = Thursday
+            last_thursday = d
+    if last_thursday is None:
+        raise RuntimeError(f"No Thursday found between Jan 17 and Jan 23 for year {year}")
+    return last_thursday
+
+
 def _cycle_date_from_number(year: int, cycle: int) -> datetime:
     # Returns the start date of the given AIRAC cycle in a given year
-    base = _AIRAC_START_2000
-    years_since = year - 2000
-    return base + timedelta(days=(years_since * 28 * 13) + (cycle - 1) * 28)
+    base = get_first_airac_of_year(year)
+    return base + timedelta(days=(cycle - 1) * 28)
 
 
 def _cycle_number_from_date(date: datetime) -> tuple[int, int]:
     if date.tzinfo is None:
         raise ValueError("date must be timezone-aware (use UTC)")
-    base = _AIRAC_START_2000
-    delta = (date - base).days
-    if delta < 0:
-        raise ValueError("Date before AIRAC epoch (2000-01-27)")
-    cycle_index = delta // 28
-    year = 2000 + (cycle_index // 13)
-    cycle = (cycle_index % 13) + 1
+    year = date.year
+    first_cycle_start = get_first_airac_of_year(year)
+    if date < first_cycle_start:
+        # Belongs to previous year's last cycles
+        year -= 1
+        first_cycle_start = get_first_airac_of_year(year)
+    delta = (date - first_cycle_start).days
+    cycle = (delta // 28) + 1
+    if cycle < 1:
+        cycle = 1
+    elif cycle > 13:
+        cycle = 13
     return (year, cycle)
 
 
