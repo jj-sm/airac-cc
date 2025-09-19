@@ -1,5 +1,6 @@
 import re
 
+
 def format_cycle(cycle: str) -> str:
     """
     Returns a human-readable AIRAC cycle string, e.g. 'AIRAC 24/08' for '2408'.
@@ -10,6 +11,7 @@ def format_cycle(cycle: str) -> str:
     num = cycle[2:]
     return f"AIRAC {year}/{num}"
 
+
 def parse_cycle(cycle: str) -> tuple[int, int]:
     """
     Parses a cycle string into (year, cycle_number), e.g. '2408' -> (2024, 8)
@@ -19,6 +21,7 @@ def parse_cycle(cycle: str) -> tuple[int, int]:
     year = 2000 + int(cycle[:2])
     number = int(cycle[2:])
     return year, number
+
 
 def is_valid_cycle_format(cycle: str) -> bool:
     """

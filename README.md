@@ -35,7 +35,7 @@ It provides a variety of utilities to determine cycle dates, validate cycle stri
 
 ## Installation
 
-Install from PyPI:
+Install from PyPI (when published):
 
 ```bash
 pip install airac-tools
@@ -54,31 +54,31 @@ pip install .
 ## Usage
 
 ```python
-from airac_tools import cycle as core
+from airac_tools import cycle
 
 # Get current AIRAC cycle
-cycle = core.get_current_cycle()
+current_cycle = cycle.get_current_cycle()
 print(cycle)  # e.g., '2308'
 
 # List all cycles in 2025
-cycles_2025 = core.list_cycles(2025)
+cycles_2025 = cycle.list_cycles(2025)
 print(cycles_2025)  # ['2501', ..., '2513']
 
 # Convert date to cycle
-from datetime import datetime
-cycle = core.date_to_cycle(datetime(2024, 8, 10))
+from datetime import datetime, timezone
+cycle_2 = cycle.date_to_cycle(datetime(2024, 8, 10, tzinfo=timezone.utc))
 print(cycle)  # e.g., '2408'
 
 # Get cycle start/end dates
-start = core.get_cycle_start_date('2408')
-end = core.get_cycle_end_date('2408')
+start = cycle.get_cycle_start_date('2408')
+end = cycle.get_cycle_end_date('2408')
 print(start, end)
 
 # Check if date is within a cycle
-core.is_date_in_cycle(datetime(2024, 8, 10), '2408')  # True
+cycle.is_date_in_cycle(datetime(2024, 8, 10, tzinfo=timezone.utc), '2408')  # True
 
 # Cycle offset
-core.cycle_offset('2408', 2)  # '2410'
+cycle.cycle_offset('2408', 2)  # '2410'
 
 # Format cycle
 from airac_tools import utils
@@ -102,12 +102,13 @@ print(utils.format_cycle('2408'))  # 'AIRAC 24/08'
 
 [//]: # (---)
 
+[//]: # ()
 [//]: # (## Continuous Integration and Publishing)
 
 [//]: # ()
 [//]: # (- Tests are run automatically via GitHub Actions on every push and pull request.)
 
-[//]: # (- Publishing to PyPI is automated on release tags &#40;see `.github/workflows/publish.yaml`&#41;.)
+[//]: # (- Publishing to PyPI is automated on release tags &#40;see `.github/workflows/publish.yml`&#41;.)
 
 [//]: # (- To publish, make sure your PyPI credentials are set as repository secrets &#40;`PYPI_USERNAME`, `PYPI_PASSWORD`&#41;, then push a tag:  )
 
