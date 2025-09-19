@@ -45,6 +45,7 @@ def _dt(y, m, d):
     ("2811", _dt(2028, 10, 26)),
     ("2812", _dt(2028, 11, 23)),
     ("2813", _dt(2028, 12, 21)),
+    ("3013", _dt(2030, 12, 19)),
 ])
 def test_cycle_start_dates_extended(cycle, expected):
     assert core.get_cycle_start_date(cycle) == expected

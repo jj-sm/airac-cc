@@ -5,15 +5,17 @@ _AIRAC_START_2000 = datetime(2000, 1, 27, tzinfo=timezone.utc)
 
 
 def get_first_airac_of_year(year: int) -> datetime:
-    # The first AIRAC cycle starts on the last Thursday between Jan 17 and Jan 23 (inclusive)
-    last_thursday = None
-    for day in range(17, 24):
-        d = datetime(year, 1, day, tzinfo=timezone.utc)
-        if d.weekday() == 3:  # 3 = Thursday
-            last_thursday = d
-    if last_thursday is None:
-        raise RuntimeError(f"No Thursday found between Jan 17 and Jan 23 for year {year}")
-    return last_thursday
+    """
+    Return the first AIRAC cycle start date for the provided year.
+    ICAO AIRAC cycles are defined as every 28 days from Jan 28, 1999.
+    """
+    base = datetime(1999, 1, 28, tzinfo=timezone.utc)
+    d = datetime(year, 1, 1, tzinfo=timezone.utc)
+
+    delta_days = (d - base).days
+    cycles_since_base = (delta_days + 27) // 28
+    first_cycle = base + timedelta(days=cycles_since_base * 28)
+    return first_cycle
 
 
 def _cycle_date_from_number(year: int, cycle: int) -> datetime:
